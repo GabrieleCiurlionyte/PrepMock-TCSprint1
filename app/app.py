@@ -2,6 +2,12 @@ import streamlit as st
 from components.DifficultySelector import render_difficulty_selector
 from components.Header import render_header
 from components.SideBar import render_OpenAPIConfigurationSideBar
+from services.InterviewEvaluator.main import EvaluateIntervieweeResponse
+from services.InterviewEvaluator.interviewEvaluatorService import InterviewEvaluatorConfig
+from services.InterviewQuestionGenerator.InterviewQuestionGenerator import (
+    InterviewQuestionGenerator,
+)
+from services.InterviewQuestionGenerator.questionBank import QUESTION_BANK
 
 # Page configuration
 st.set_page_config(
@@ -11,8 +17,6 @@ st.set_page_config(
     initial_sidebar_state="auto"
 )
 
-# TODO: setup streamlit theming
-
 render_OpenAPIConfigurationSideBar()
 
 render_header(
@@ -21,32 +25,74 @@ render_header(
     description="Configure OpenAPI key. Select your level, answer technical interview questions, and receive structured feedback."
 )
 
-# TODO: set up side bar where to configure your openAPI key
 
-difficulty = render_difficulty_selector()
+def format_evaluation_response(evaluation) -> str:
+    lines = [f"Score: {evaluation.overall_score}" if evaluation.overall_score is not None else "Score: N/A"]
 
-# How does streamlit styling work?
+    if evaluation.message:
+        lines.append(f"Message: {evaluation.message}")
 
+    if evaluation.correct_answer:
+        lines.append("Correct points:")
+        lines.extend(f"- {item}" for item in evaluation.correct_answer)
 
+    if evaluation.incorrect_answer:
+        lines.append("Needs improvement:")
+        lines.extend(f"- {item}" for item in evaluation.incorrect_answer)
 
+    if evaluation.explanation:
+        lines.append(f"Explanation: {evaluation.explanation}")
 
+    return "\n".join(lines)
 
-### Let's define the instructions on
-# how ot use the app
+if "difficulty" not in st.session_state:
+    st.session_state["difficulty"] = render_difficulty_selector()
+    
+if "generator" not in st.session_state:
+    st.session_state["generator"] = InterviewQuestionGenerator(question_bank=QUESTION_BANK)
+    
+print(st.session_state["generator"])
 
-# Onboarding section
+if "current_question" not in st.session_state:
+    st.session_state["current_question"] = None
 
-startInterviewButtonState = st.button("Start Interview")
-print(startInterviewButtonState)
+if st.button("Start Interview"):
+    st.session_state["current_question"] = st.session_state["generator"].provide_interview_question(
+        difficulty=st.session_state["difficulty"]
+    )
 
+print(st.session_state["current_question"])
 
-# TODO: if enough time create custom icon styling for streamlit components
-with st.chat_message("user"):
-    st.write("Hello 👋")
+current_question = st.session_state["current_question"]
 
+if current_question:
+    st.markdown(f"### {current_question.question}")
 
-prompt = st.chat_input("Say something")
-if prompt:
-    st.write(f"User has sent the following prompt: {prompt}")
+if "messages" not in st.session_state:
+    st.session_state["messages"] = []
+
+for message in st.session_state["messages"]:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+if interviewee_answer := st.chat_input("What is up?"):
+    with st.chat_message("user"):
+        st.markdown(interviewee_answer)
+    st.session_state.messages.append({"role": "user", "content": interviewee_answer})
+
+    evaluation = EvaluateIntervieweeResponse(
+        interviewEvaluatorConfig=InterviewEvaluatorConfig(),
+        interview_question=(
+            f"QUESTION: {st.session_state['current_question'].question}\n\n"
+            f"ANSWER:\n{st.session_state['current_question'].answer}"
+        ),
+        interviewee_answer=interviewee_answer,
+    )
+    response = format_evaluation_response(evaluation)
+
+    with st.chat_message("assistant"):
+        st.markdown(response)
+
+    st.session_state.messages.append({"role": "assistant", "content": response})
 
 

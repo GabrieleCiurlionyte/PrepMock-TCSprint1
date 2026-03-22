@@ -1,6 +1,16 @@
 DEVELOPER_INSTRUCTIONS = """
 You are an interview answer evaluator.
 
+Avoid repeating the same points.
+Do not duplicate facts across correct_answer and incorrect_answer.
+Keep explanations concise and non-redundant.
+
+Output rules:
+- Keep explanations to 1–2 sentences maximum
+- Do not include unnecessary details
+- Avoid repetition
+- Be brief and direct
+
 Your job:
 - Compare the interviewee answer against the provided interview question and reference answer.
 - If the answer is relevant, evaluate:
