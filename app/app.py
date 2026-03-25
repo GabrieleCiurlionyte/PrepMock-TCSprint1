@@ -1,7 +1,9 @@
 import streamlit as st
 from components.DifficultySelector import render_difficulty_selector
 from components.Header import render_header
-from components.SideBar import render_OpenAPIConfigurationSideBar
+from components.SideBar import render_openai_configuration_sidebar
+config, openai_api_key = render_openai_configuration_sidebar()
+
 from services.InterviewEvaluator.main import EvaluateIntervieweeResponse
 from services.InterviewEvaluator.interviewEvaluatorService import InterviewEvaluatorConfig
 from services.InterviewQuestionGenerator.InterviewQuestionGenerator import (
@@ -17,7 +19,9 @@ st.set_page_config(
     initial_sidebar_state="auto"
 )
 
-render_OpenAPIConfigurationSideBar()
+interviewConfig, openai_api_key = render_openai_configuration_sidebar()
+print(interviewConfig)
+print(openai_api_key)
 
 render_header(
     title="PrepMock",
@@ -80,6 +84,10 @@ if interviewee_answer := st.chat_input("What is up?"):
         st.markdown(interviewee_answer)
     st.session_state.messages.append({"role": "user", "content": interviewee_answer})
 
+    if not openai_api_key:
+        st.error("OpenAI API key is required. Add OPENAI_API_KEY in .env or enter it in the sidebar.")
+        st.stop()
+
     evaluation = EvaluateIntervieweeResponse(
         interviewEvaluatorConfig=InterviewEvaluatorConfig(),
         interview_question=(
@@ -87,6 +95,7 @@ if interviewee_answer := st.chat_input("What is up?"):
             f"ANSWER:\n{st.session_state['current_question'].answer}"
         ),
         interviewee_answer=interviewee_answer,
+        openai_api_key=openai_api_key,
     )
     response = format_evaluation_response(evaluation)
 

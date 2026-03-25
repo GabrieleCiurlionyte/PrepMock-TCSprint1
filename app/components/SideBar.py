@@ -1,45 +1,44 @@
 import os
-
 from dotenv import load_dotenv
 import streamlit as st
 
+from services.InterviewEvaluator.InterviewEvaluatorConfig import InterviewEvaluatorConfig
 
-## TODO: these should probably be saved in the state
-## TODO; there should be documentation of what are the largest values
-def render_OpenAPIConfigurationSideBar() -> str | None:
+def render_openai_configuration_sidebar() -> tuple[InterviewEvaluatorConfig, str | None]:
     load_dotenv()
-    env_openai_key = os.getenv("OPENAI_API_KEY", "").strip()
+
+    if "interview_evaluator_config" not in st.session_state:
+        st.session_state["interview_evaluator_config"] = InterviewEvaluatorConfig()
+
+    cfg: InterviewEvaluatorConfig = st.session_state["interview_evaluator_config"]
 
     with st.sidebar:
-        st.subheader("Configure OpenAPI client")
+        st.subheader("Configure OpenAI client")
 
-        st.markdown("OpenAI key")
-        if env_openai_key:
+        env_key = os.getenv("OPENAI_API_KEY", "").strip()
+        if env_key:
+            api_key = env_key
             st.success("OpenAI key loaded from .env")
-            st.session_state["openai_api_key"] = env_openai_key
         else:
-            st.info("OPENAI_API_KEY not found in .env. Please enter it below.")
-            st.session_state["openai_api_key"] = st.text_input(
-                "OpenAI API Key",
-                value=st.session_state.get("openai_api_key", ""),
-                type="password",
-                placeholder="sk-...",
-            ).strip()
+            api_key = st.text_input("OpenAI API Key", type="password", placeholder="sk-...").strip()
 
-        ### TODO: add validation of the OPENAI key
+        model = st.selectbox(
+            "Model",
+            options=["gpt-4.1", "gpt-4.1-mini", "gpt-4.1-nano", "gpt-4o", "gpt-4o-mini"],
+            index=["gpt-4.1", "gpt-4.1-mini", "gpt-4.1-nano", "gpt-4o", "gpt-4o-mini"].index(cfg.model),
+        )
 
-        st.markdown("Model type")
+        temperature = st.slider("Temperature", min_value=0.0, max_value=1.0, value=cfg.temperature, step=0.05)
+        top_p = st.slider("Top-p", min_value=0.0, max_value=1.0, value=cfg.top_p, step=0.05)
+        max_output_tokens = st.number_input("Max output tokens", min_value=1, max_value=4096, value=cfg.max_output_tokens, step=1)
+        store = st.checkbox("Store responses", value=cfg.store)
 
-        ## TODO: create a dropdown
+    st.session_state["interview_evaluator_config"] = InterviewEvaluatorConfig(
+        model=model,
+        temperature=temperature,
+        top_p=top_p,
+        max_output_tokens=int(max_output_tokens),
+        store=store,
+    )
 
-        st.slider("Model temperature", 0, 1, 0, 1)
-
-        st.slider("Model's top-p", 0, 1, 0, 1)
-
-        ### Add a comment that it is recommended that only
-        # one needs to be redacted
-
-        st.divider()
-        st.caption("Built by Gabriele Ciurlionyte")
-
-    return st.session_state.get("openai_api_key") or None
+    return st.session_state["interview_evaluator_config"], (api_key or None)

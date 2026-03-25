@@ -1,19 +1,12 @@
-from dataclasses import dataclass
 from typing import Any
 from openai import OpenAI
 from openai.types.responses import ResponseInputParam
 
+from app.services.InterviewEvaluator.InterviewEvaluatorConfig import InterviewEvaluatorConfig
+
 from .prompts.few_shot_examples import FEW_SHOT_EXAMPLES
 from .prompts.instructions import DEVELOPER_INSTRUCTIONS
 from .schemas import QuestionEvaluation
-
-@dataclass(slots=True)
-class InterviewEvaluatorConfig:
-    model: str = "gpt-4.1-nano"
-    top_p: float = 0.9
-    temperature: float = 0.5
-    max_output_tokens: int = 300
-    store: bool = False
     
 class InterviewEvaluatorService:
     def __init__(self, client: OpenAI, config: InterviewEvaluatorConfig | None = None):

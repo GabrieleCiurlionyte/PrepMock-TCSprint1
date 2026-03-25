@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from openai import OpenAI, conversations
+from openai import OpenAI
 from .interviewEvaluatorService import (
     InterviewEvaluatorConfig,
     InterviewEvaluatorService,
@@ -8,11 +8,13 @@ import streamlit as st
 
 load_dotenv()
 
-conversation = conversations.create()
-
-client = OpenAI()
-
-def EvaluateIntervieweeResponse(interviewEvaluatorConfig : InterviewEvaluatorConfig, interview_question: str, interviewee_answer : str):
+def EvaluateIntervieweeResponse(
+    interviewEvaluatorConfig: InterviewEvaluatorConfig,
+    interview_question: str,
+    interviewee_answer: str,
+    openai_api_key: str | None = None,
+):
+    client = OpenAI(api_key=openai_api_key) if openai_api_key else OpenAI()
     
     evaluator = InterviewEvaluatorService(
         client=client,
