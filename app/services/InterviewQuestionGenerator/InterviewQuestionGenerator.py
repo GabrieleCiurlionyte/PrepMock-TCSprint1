@@ -7,7 +7,11 @@ from .interviewQuestion import InterviewQuestion, Difficulty
 class InterviewQuestionGenerator:
     question_bank: list[InterviewQuestion]
     asked_question_ids: set[int] = field(default_factory=set)
-
+    
+    @property
+    def asked_count(self) -> int:
+        return len(self.asked_question_ids)
+    
     def provide_interview_question(self, difficulty: Difficulty | None = None) -> InterviewQuestion | None:
         available_questions = [
             q for q in self.question_bank
@@ -20,6 +24,7 @@ class InterviewQuestionGenerator:
 
         question = random.choice(available_questions)
         self.asked_question_ids.add(question.id)
+
         return question
 
     def reset_session(self) -> None:

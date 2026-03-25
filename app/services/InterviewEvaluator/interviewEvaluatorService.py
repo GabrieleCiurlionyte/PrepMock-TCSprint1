@@ -2,8 +2,7 @@ from typing import Any
 from openai import OpenAI
 from openai.types.responses import ResponseInputParam
 
-from app.services.InterviewEvaluator.InterviewEvaluatorConfig import InterviewEvaluatorConfig
-
+from .InterviewEvaluatorConfig import InterviewEvaluatorConfig
 from .prompts.few_shot_examples import FEW_SHOT_EXAMPLES
 from .prompts.instructions import DEVELOPER_INSTRUCTIONS
 from .schemas import QuestionEvaluation
@@ -17,7 +16,8 @@ class InterviewEvaluatorService:
         if isinstance(content, list):
             normalized_content = content
         else:
-            normalized_content = [{"type": "input_text", "text": str(content)}]
+            content_type = "output_text" if role == "assistant" else "input_text"
+            normalized_content = [{"type": content_type, "text": str(content)}]
 
         return {
             "role": role,
@@ -47,15 +47,15 @@ class InterviewEvaluatorService:
         inputList = []
         
         self._addFewShotExamples(inputList, include_few_shot)
-        inputList.append(*self._normalize_previous_messages(previous_messages))
-        inputList.extend(self._build_message(
+        inputList.extend(self._normalize_previous_messages(previous_messages))
+        inputList.append(self._build_message(
                 role="user",
                 content=(
                     "Interview question and reference answer:\n\n"
                     f"{interview_question}"
                 ),
             ))
-        inputList.extend(self._build_message(
+        inputList.append(self._build_message(
                 role="user",
                 content=(
                     "Interviewee answer:\n\n"

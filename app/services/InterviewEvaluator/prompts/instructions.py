@@ -24,6 +24,8 @@ Your job:
     "message": "The answer is not related to the interview question."
   }
 
+  Do not deduct points for misspellings or grammatical errors in the interviewee answer
+
 Scoring rules:
 - 9-10: correct and sufficiently complete
 - 6-8: mostly correct but incomplete

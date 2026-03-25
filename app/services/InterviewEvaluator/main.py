@@ -6,15 +6,13 @@ from .interviewEvaluatorService import (
 )
 import streamlit as st
 
-load_dotenv()
-
 def EvaluateIntervieweeResponse(
     interviewEvaluatorConfig: InterviewEvaluatorConfig,
     interview_question: str,
     interviewee_answer: str,
-    openai_api_key: str | None = None,
+    openai_api_key: str,
 ):
-    client = OpenAI(api_key=openai_api_key) if openai_api_key else OpenAI()
+    client = OpenAI(api_key=openai_api_key)
     
     evaluator = InterviewEvaluatorService(
         client=client,
