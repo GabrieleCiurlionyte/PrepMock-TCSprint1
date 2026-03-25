@@ -48,28 +48,36 @@ class InterviewEvaluatorService:
         previous_messages: ResponseInputParam,
         interview_question: str,
         interviewee_answer: str,
-    ) -> list:
-        return [
-            *[
-                self._build_message(role=example["role"], content=example["content"])
-                for example in FEW_SHOT_EXAMPLES
-            ],
-            *self._normalize_previous_messages(previous_messages),
-            self._build_message(
+        include_few_shot: bool = False,
+    ) -> list[dict[str, Any]]:
+        
+        inputList = []
+        
+        self._addFewShotExamples(inputList, include_few_shot)
+        inputList.append(*self._normalize_previous_messages(previous_messages))
+        inputList.extend(self._build_message(
                 role="user",
                 content=(
                     "Interview question and reference answer:\n\n"
                     f"{interview_question}"
                 ),
-            ),
-            self._build_message(
+            ))
+        inputList.extend(self._build_message(
                 role="user",
                 content=(
                     "Interviewee answer:\n\n"
                     f"{interviewee_answer}"
                 ),
-            ),
-        ]
+            ))
+        return inputList
+        
+    def _addFewShotExamples(self, inputList : list, include_few_shot: bool) -> list:
+        if(include_few_shot):
+            for example in FEW_SHOT_EXAMPLES:
+                inputList.append(
+                    self._build_message(role=example["role"], content=example["content"])
+                )
+        return inputList
 
     def evaluate(
         self,

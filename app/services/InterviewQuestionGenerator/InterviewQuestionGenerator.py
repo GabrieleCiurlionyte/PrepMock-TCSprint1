@@ -1,14 +1,14 @@
 import random
 from dataclasses import dataclass, field
 
-from .interviewQuestion import InterviewQuestion
+from .interviewQuestion import InterviewQuestion, Difficulty
 
 @dataclass(slots=True)
 class InterviewQuestionGenerator:
     question_bank: list[InterviewQuestion]
-    asked_question_ids: set[str] = field(default_factory=set)
+    asked_question_ids: set[int] = field(default_factory=set)
 
-    def provide_interview_question(self, difficulty: str | None = None) -> InterviewQuestion | None:
+    def provide_interview_question(self, difficulty: Difficulty | None = None) -> InterviewQuestion | None:
         available_questions = [
             q for q in self.question_bank
             if q.id not in self.asked_question_ids
