@@ -4,6 +4,12 @@ PrepMock is a Streamlit app for practicing software engineering interview questi
 
 This app was created as part of Turing College AI Engineering course homework.
 
+## Live App
+
+The app is deployed on Streamlit Community Cloud and is available at:
+
+[https://prepmock.streamlit.app/](https://prepmock.streamlit.app/)
+
 ## Features
 
 - Choose an interview difficulty level
