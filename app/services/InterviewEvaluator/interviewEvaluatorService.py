@@ -1,6 +1,5 @@
 from typing import Any
 from openai import OpenAI
-from openai.types.responses import ResponseInputParam
 
 from .InterviewEvaluatorConfig import InterviewEvaluatorConfig
 from .prompts.few_shot_examples import FEW_SHOT_EXAMPLES
@@ -24,21 +23,8 @@ class InterviewEvaluatorService:
             "content": normalized_content,
         }
 
-    def _normalize_previous_messages(
-        self, previous_messages: ResponseInputParam
-    ) -> list[dict[str, Any]]:
-        normalized_messages: list[dict[str, Any]] = []
-
-        for message in previous_messages:
-            role = message.get("role", "user")
-            content = message.get("content", "")
-            normalized_messages.append(self._build_message(role=role, content=content))
-
-        return normalized_messages
-
     def build_input(
         self,
-        previous_messages: ResponseInputParam,
         interview_question: str,
         interviewee_answer: str,
         include_few_shot: bool = False,
@@ -47,7 +33,6 @@ class InterviewEvaluatorService:
         inputList = []
         
         self._addFewShotExamples(inputList, include_few_shot)
-        inputList.extend(self._normalize_previous_messages(previous_messages))
         inputList.append(self._build_message(
                 role="user",
                 content=(
@@ -74,7 +59,6 @@ class InterviewEvaluatorService:
 
     def evaluate(
         self,
-        previous_messages: ResponseInputParam,
         interview_question: str,
         interviewee_answer: str,
     ) -> QuestionEvaluation:
@@ -82,7 +66,6 @@ class InterviewEvaluatorService:
             model=self.config.model,
             instructions=DEVELOPER_INSTRUCTIONS,
             input=self.build_input(
-                previous_messages=previous_messages,
                 interview_question=interview_question,
                 interviewee_answer=interviewee_answer,
             ),

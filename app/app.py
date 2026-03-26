@@ -9,6 +9,7 @@ from components.DifficultySelector import render_difficulty_selector
 from components.Header import render_header
 from components.SideBar import render_openai_configuration_sidebar
 from services.InterviewEvaluator.main import EvaluateIntervieweeResponse
+from services.InterviewEvaluator.promptGuardModule import validate_interview_answer
 from state import init_session_state
 
 # Page configuration
@@ -69,9 +70,12 @@ if interviewee_answer := st.chat_input(
     "What is your answer to the interview question?",
     disabled=not st.session_state["interview_active"],
 ):
+    guard_result = validate_interview_answer(interviewee_answer)
+    sanitized_answer = guard_result.sanitized_answer
+
     with st.chat_message("user"):
-        st.markdown(interviewee_answer)
-    st.session_state["messages"].append({"role": "user", "content": interviewee_answer})
+        st.markdown(sanitized_answer)
+    st.session_state["messages"].append({"role": "user", "content": sanitized_answer})
 
     if not st.session_state["current_question"]:
         st.error("Start an interview first so there is a question to evaluate.")
@@ -81,13 +85,22 @@ if interviewee_answer := st.chat_input(
         st.error("OpenAI API key is required. Add OPENAI_API_KEY in .env or enter it in the sidebar.")
         st.stop()
 
+    if not guard_result.allowed:
+        with st.chat_message("assistant"):
+            st.markdown(guard_result.reason)
+
+        st.session_state["messages"].append(
+            {"role": "assistant", "content": guard_result.reason}
+        )
+        st.stop()
+
     evaluation = EvaluateIntervieweeResponse(
         interviewEvaluatorConfig=interview_config,
         interview_question=(
             f"QUESTION: {st.session_state['current_question'].question}\n\n"
             f"ANSWER:\n{st.session_state['current_question'].answer}"
         ),
-        interviewee_answer=interviewee_answer,
+        interviewee_answer=sanitized_answer,
         openai_api_key=openai_api_key,
     )
     response = format_evaluation_response(evaluation)

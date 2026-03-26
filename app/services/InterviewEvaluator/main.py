@@ -1,10 +1,6 @@
-from dotenv import load_dotenv
 from openai import OpenAI
-from .interviewEvaluatorService import (
-    InterviewEvaluatorConfig,
-    InterviewEvaluatorService,
-)
-import streamlit as st
+from .InterviewEvaluatorConfig import InterviewEvaluatorConfig
+from .interviewEvaluatorService import InterviewEvaluatorService
 
 def EvaluateIntervieweeResponse(
     interviewEvaluatorConfig: InterviewEvaluatorConfig,
@@ -20,7 +16,6 @@ def EvaluateIntervieweeResponse(
     )
     
     result = evaluator.evaluate(
-        previous_messages=st.session_state["messages"],
         interview_question=interview_question,
         interviewee_answer=interviewee_answer
     )
