@@ -1,4 +1,5 @@
 openai
 python-dotenv
 pandas
-streamlit
+streamlit>=1.55,<1.56
+altair>=5,<6
