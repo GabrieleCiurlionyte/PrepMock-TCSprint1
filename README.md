@@ -2,6 +2,8 @@
 
 PrepMock is a Streamlit app for practicing software engineering interview questions. It lets you start a mock interview, answer technical questions in a chat-style UI, and receive structured AI feedback based on a reference answer.
 
+This app was created as part of Turing College AI Engineering course homework.
+
 ## Features
 
 - Choose an interview difficulty level
