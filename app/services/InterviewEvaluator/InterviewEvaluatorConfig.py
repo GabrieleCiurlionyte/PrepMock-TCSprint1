@@ -1,5 +1,6 @@
 
 from dataclasses import dataclass
+from .enums.promptType import PromptType
 
 @dataclass(slots=True)
 class InterviewEvaluatorConfig:
@@ -8,3 +9,4 @@ class InterviewEvaluatorConfig:
     temperature: float = 0.5
     max_output_tokens: int = 300
     store: bool = False
+    prompt_type: str = PromptType.FEW_SHOT_WITH_GENERIC_EXAMPLES

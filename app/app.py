@@ -1,6 +1,6 @@
 import streamlit as st
 
-from components.actions.StartInterview import (
+from components.actions.interview_state import (
     advance_to_next_question,
     end_interview,
     start_interview,
