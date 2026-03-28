@@ -3,7 +3,7 @@ from .interviewQuestion import InterviewQuestion, Difficulty
 QUESTION_BANK = [
     InterviewQuestion(
         id=1,
-        question="What are the main principles of OOP?",
+        question="What are the 4 main principles of OOP?",
         answer="""
 Encapsulation involves bundling data (properties) and methods into a single unit called a class. Encapsulation helps hide the internal implementation details of an object and provides a well-defined interface for interacting with the object.
 Abstraction focuses on the essential features of an object, hiding the unnecessary details. It allows you to create abstract classes and interfaces that define a contract without specifying the implementation details.

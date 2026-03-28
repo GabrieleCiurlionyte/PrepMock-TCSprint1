@@ -11,6 +11,7 @@ from components.SideBar import render_openai_configuration_sidebar
 from services.InterviewEvaluator.main import EvaluateIntervieweeResponse
 from services.InterviewEvaluator.promptGuardModule import validate_interview_answer
 from state import init_session_state
+from utils.evaluation_formatter import format_evaluation_response
 
 # Page configuration
 st.set_page_config(
@@ -28,30 +29,6 @@ render_header(
     subheader="AI interview practice for software engineers",
     description="Configure OpenAI key. Select your level, answer technical interview questions, and receive structured feedback.",
 )
-
-def format_evaluation_response(evaluation) -> str:
-    lines = [
-        f"Score: {evaluation.overall_score}"
-        if evaluation.overall_score is not None
-        else "Score: N/A"
-    ]
-
-    if evaluation.message:
-        lines.append(f"Message: {evaluation.message}")
-
-    if evaluation.correct_answer:
-        lines.append("Correct points:")
-        lines.extend(f"- {item}" for item in evaluation.correct_answer)
-
-    if evaluation.incorrect_answer:
-        lines.append("Needs improvement:")
-        lines.extend(f"- {item}" for item in evaluation.incorrect_answer)
-
-    if evaluation.explanation:
-        lines.append(f"Explanation: {evaluation.explanation}")
-
-    return "\n".join(lines)
-
 
 render_difficulty_selector()
 st.markdown(f"Current difficulty: **{st.session_state['difficulty'].name.title()}**")

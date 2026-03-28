@@ -4,7 +4,7 @@ from openai import OpenAI
 from .InterviewEvaluatorConfig import InterviewEvaluatorConfig
 from .prompts.few_shot_examples import FEW_SHOT_EXAMPLES
 from .prompts.instructions import DEVELOPER_INSTRUCTIONS
-from .schemas import QuestionEvaluation
+from .schemas import FallbackQuestionEvaluation, QuestionEvaluation
     
 class InterviewEvaluatorService:
     def __init__(self, client: OpenAI, config: InterviewEvaluatorConfig | None = None):
