@@ -16,7 +16,7 @@ The app is deployed on Streamlit Community Cloud and is available at:
 - Start and end an interview session
 - Answer questions in a chat interface
 - Get AI-generated scoring and feedback
-- Configure the OpenAI model and prompt type from the sidebar
+- Configure the OpenAI model from the sidebar
 - Includes a prompt guard to reject clearly manipulative or prompt-injection-style inputs
 
 ## Requirements
