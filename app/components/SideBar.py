@@ -31,14 +31,13 @@ def render_openai_configuration_sidebar() -> tuple[InterviewEvaluatorConfig, str
         temperature = st.slider("Temperature", min_value=0.0, max_value=1.0, value=cfg.temperature, step=0.05)
         top_p = st.slider("Top-p", min_value=0.0, max_value=1.0, value=cfg.top_p, step=0.05)
         max_output_tokens = st.number_input("Max output tokens", min_value=1, max_value=4096, value=cfg.max_output_tokens, step=1)
-        store = st.checkbox("Store responses", value=cfg.store)
 
     st.session_state["interview_evaluator_config"] = InterviewEvaluatorConfig(
         model=model,
         temperature=temperature,
         top_p=top_p,
         max_output_tokens=int(max_output_tokens),
-        store=store,
+        store=False,
     )
 
     return st.session_state["interview_evaluator_config"], (api_key or None)

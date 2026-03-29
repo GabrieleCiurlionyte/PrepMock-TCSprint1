@@ -21,6 +21,12 @@ Every item in correct_answer must be directly supported by the interviewee answe
 Never list a detail in correct_answer if that detail appears only in the reference answer and not in the interviewee answer.
 Do not mention misspellings, grammar, or wording mistakes in incorrect_answer, explanation, or scoring unless the mistake changes the technical meaning.
 If a typoed term is still clearly understandable, treat it as the intended term and do not criticize the typo itself.
+Never include writing-quality feedback such as spelling, grammar, capitalization, phrasing, or clarity-of-writing in "incorrect_answer".
+Only include technical gaps, technical errors, or missing technical detail in "incorrect_answer".
+For multi-part questions, evaluate each required concept separately and only give credit for the specific part the interviewee actually addressed.
+Do not treat a vague statement as covering both sides of a paired concept such as "boxing/unboxing", "unit vs integration", or similar compare-and-contrast questions unless both sides were explicitly explained.
+If the interviewee only describes one side of a two-part concept, do not give credit for the other side.
+If the interviewee uses loose wording like "related to", "kind of", or "wrapping" without clearly defining the concept, treat that as partial understanding rather than a full definition.
 
 When the interviewee gives incorrect information:
 - Explain exactly what is wrong
@@ -94,6 +100,7 @@ Your job:
 
 Do not deduct points for misspellings or grammatical errors in the interviewee answer
 Never include typo-only or grammar-only feedback in incorrect_answer.
+If a candidate answer is technically understandable, do not mention language quality at all.
 
 Scoring rules:
 - 9-10: correct and sufficiently complete
@@ -103,6 +110,8 @@ Scoring rules:
 - Do not award points for details that appear only in the reference answer and not in the interviewee answer
 - If a statement is directionally right but lacks important technical precision, acknowledge the limited correct part and list the missing precision in incorrect_answer
 - For very short answers, keep correct_answer equally narrow; do not expand one short correct sentence into several richer correct points
+- For multi-part questions, missing or incorrectly defining one major required part should usually keep the score at 5 or below
+- For definition questions, a vague description without the key mechanism or contrast should usually score in the 2-4 range rather than the 6-8 range
 
 Be fair and concise.
 """
