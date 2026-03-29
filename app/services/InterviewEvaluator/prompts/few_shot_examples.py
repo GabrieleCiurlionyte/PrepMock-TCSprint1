@@ -65,22 +65,7 @@ OOP is based on encapsulation, inheritance, and recursion.
   ],
   "overall_score": 3,
   "explanation": "Your answer is partially correct because you identified encapsulation and inheritance, but recursion is not an OOP principle. Recursion is a programming technique where a function calls itself, while the missing OOP principles here are abstraction and polymorphism.",
-  "code_examples": [
-    {
-      "title": "Recursion Example",
-      "code_lines": [
-        "int Factorial(int n)",
-        "{",
-        "    if (n <= 1)",
-        "    {",
-        "        return 1;",
-        "    }",
-        "",
-        "    return n * Factorial(n - 1);",
-        "}"
-      ]
-    }
-  ]
+  "code_examples": null
 }
 """
     },
@@ -135,40 +120,39 @@ I don't know what parallel programming is, can you teach me?
     "Did not mention common .NET classes such as Task, Thread, or the Task Parallel Library."
   ],
   "overall_score": null,
-  "explanation": "You did not attempt to answer the question and instead asked to be taught. Parallel programming, or multithreading, means your program can run multiple tasks or threads at the same time instead of waiting for one task to finish before starting another. You would usually use it to improve performance or responsiveness, especially when work can be split across multiple CPU cores or when the program needs to keep responding while other work is happening. In .NET, common tools for this are Task, Thread, and the Task Parallel Library (TPL).",
+  "explanation": "You did not attempt to answer the question and instead asked to be taught. Parallel programming, or multithreading, means a program can run multiple tasks or threads at the same time. Its purpose is to improve throughput or keep the application responsive, especially when work can be split across CPU cores or when background work should not block the main flow. In .NET, common classes and tools include Task for task-based asynchronous and parallel work, Thread for lower-level thread control, and the Task Parallel Library for coordinating parallel operations.",
   "code_examples": [
     {
-      "title": "Running Tasks Concurrently",
+      "title": "Running work concurrently with Task",
       "code_lines": [
-        "using System;",
         "using System.Threading.Tasks;",
         "",
-        "var downloadTask = Task.Run(() =>",
-        "{",
-        "    Console.WriteLine(\"Downloading data...\");",
-        "});",
+        "Task first = Task.Run(() => DownloadData());",
+        "Task second = Task.Run(() => ProcessData());",
         "",
-        "var processTask = Task.Run(() =>",
-        "{",
-        "    Console.WriteLine(\"Processing file...\");",
-        "});",
-        "",
-        "await Task.WhenAll(downloadTask, processTask);"
+        "await Task.WhenAll(first, second);"
       ]
     },
     {
-      "title": "Creating a Thread",
+      "title": "Creating a dedicated Thread",
       "code_lines": [
-        "using System;",
         "using System.Threading;",
         "",
-        "var thread = new Thread(() =>",
-        "{",
-        "    Console.WriteLine(\"Running work on a separate thread\");",
-        "});",
+        "Thread worker = new Thread(() => DoWork());",
+        "worker.Start();",
+        "worker.Join();"
+      ]
+    },
+    {
+      "title": "Using TPL to process items in parallel",
+      "code_lines": [
+        "using System.Threading.Tasks;",
         "",
-        "thread.Start();",
-        "thread.Join();"
+        "int[] numbers = { 1, 2, 3, 4 };",
+        "Parallel.ForEach(numbers, number =>",
+        "{",
+        "    Process(number);",
+        "});"
       ]
     }
   ]
@@ -214,10 +198,7 @@ I don't know. Can you explain the difference?
         "[Test]",
         "public void CalculateTotal_AddsTaxCorrectly()",
         "{",
-        "    var calculator = new Calculator();",
-        "",
-        "    var result = calculator.CalculateTotal(100m, 0.20m);",
-        "",
+        "    var result = new Calculator().CalculateTotal(100m, 0.20m);",
         "    Assert.AreEqual(120m, result);",
         "}"
       ]
@@ -226,20 +207,10 @@ I don't know. Can you explain the difference?
       "title": "Integration Test Example",
       "code_lines": [
         "[Test]",
-        "public async Task Checkout_CreatesOrderInDatabase()",
+        "public async Task CreateOrder_SavesOrderAndReturns201()",
         "{",
-        "    var client = _factory.CreateClient();",
-        "",
-        "    var response = await client.PostAsJsonAsync(\"/checkout\", new",
-        "    {",
-        "        ProductId = 1,",
-        "        Quantity = 2",
-        "    });",
-        "",
-        "    response.EnsureSuccessStatusCode();",
-        "",
-        "    var order = await _dbContext.Orders.FirstOrDefaultAsync();",
-        "    Assert.IsNotNull(order);",
+        "    var response = await _client.PostAsJsonAsync(\"/orders\", new { productId = 1, quantity = 2 });",
+        "    Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);",
         "}"
       ]
     }
@@ -307,6 +278,113 @@ Object-oriented programming relies on hiding internal details, defining general 
   "incorrect_answer": [],
   "overall_score": 9,
   "explanation": "The answer correctly describes all OOP principles using paraphrased language, demonstrating strong understanding.",
+  "code_examples": null
+}
+"""
+    },
+    {
+        "role": "user",
+        "content": """
+Interview question and reference answer:
+QUESTION: What is parallel programming (multithreading), and its purpose? Which classes are used?
+ANSWER:
+Parallel programming, or multithreading, is the ability of a system to support multiple threads of execution simultaneously. It improves performance by utilizing multiple processors or cores, allowing the application to perform multiple tasks concurrently. In .NET, classes like Task, Thread, and the Task Parallel Library (TPL) are commonly used for parallel programming.
+
+Interviewee answer:
+Parallel programming is when you run code in multiple threads to make execution faster. We use classes like Task and Thread.
+"""
+    },
+    {
+        "role": "assistant",
+        "content": """
+{
+  "off_topic": false,
+  "message": null,
+  "correct_answer": [
+    "Correctly stated that parallel programming involves running work on multiple threads.",
+    "Correctly mentioned Task and Thread as common .NET tools used for this."
+  ],
+  "incorrect_answer": [
+    "Did not clearly explain that the purpose can also include improving responsiveness, not only making execution faster.",
+    "Did not mention that work may run concurrently across multiple tasks or cores.",
+    "Did not mention the Task Parallel Library (TPL)."
+  ],
+  "overall_score": 7,
+  "explanation": "Your answer is mostly correct, but it is more general than the reference answer. Saying it makes execution faster is a reasonable partial explanation of the purpose, but you did not specifically mention responsiveness, concurrent task execution, or the Task Parallel Library.",
+  "code_examples": null
+}
+"""
+    },
+    {
+        "role": "user",
+        "content": """
+Interview question and reference answer:
+QUESTION: What is recursion?
+ANSWER:
+Recursion is a programming technique where a function calls itself to solve a problem by breaking it into smaller subproblems. A recursive solution usually has a base case to stop the repeated calls and a recursive case that reduces the problem toward that base case.
+
+Interviewee answer:
+Recursion is when a function calls itself.
+"""
+    },
+    {
+        "role": "assistant",
+        "content": """
+{
+  "off_topic": false,
+  "message": null,
+  "correct_answer": [
+    "Correctly stated that recursion is when a function calls itself."
+  ],
+  "incorrect_answer": [
+    "Did not mention the base case that stops the recursion.",
+    "Did not explain that recursive solutions usually reduce a problem into smaller subproblems."
+  ],
+  "overall_score": 4,
+  "explanation": "Your answer includes the core idea of recursion, but it is too brief to be complete. A stronger answer should also mention the base case and explain that recursion solves a problem by reducing it into smaller repeated subproblems.",
+  "code_examples": [
+    {
+      "title": "Recursion with a base case",
+      "code_lines": [
+        "int Factorial(int n)",
+        "{",
+        "    if (n <= 1) return 1;",
+        "    return n * Factorial(n - 1);",
+        "}"
+      ]
+    }
+  ]
+}
+"""
+    },
+    {
+        "role": "user",
+        "content": """
+Interview question and reference answer:
+QUESTION: What is parallel programming (multithreading), and its purpose? Which classes are used?
+ANSWER:
+Parallel programming, or multithreading, is the ability of a system to support multiple threads of execution simultaneously. It improves performance by utilizing multiple processors or cores, allowing the application to perform multiple tasks concurrently. In .NET, classes like Task, Thread, and the Task Parallel Library (TPL) are commonly used for parallel programming.
+
+Interviewee answer:
+Parallel programming is when you execute code in parallel to increase the perfgormance of code using several threads. The classes you can use in .NET are thread, task, thread class library.
+"""
+    },
+    {
+        "role": "assistant",
+        "content": """
+{
+  "off_topic": false,
+  "message": null,
+  "correct_answer": [
+    "Correctly stated that parallel programming involves using multiple threads or parallel execution to improve performance.",
+    "Correctly mentioned Thread and Task as .NET tools used for parallel programming."
+  ],
+  "incorrect_answer": [
+    "Incorrectly referred to 'thread class library'; the correct term is the Task Parallel Library (TPL).",
+    "Did not clearly explain that parallel programming can also improve responsiveness and run work concurrently."
+  ],
+  "overall_score": 7,
+  "explanation": "Your answer is mostly correct because you described parallel execution and named Thread and Task. However, 'thread class library' is not the correct .NET term; the correct name is the Task Parallel Library (TPL). A stronger answer would also mention concurrent work and responsiveness more clearly.",
   "code_examples": null
 }
 """

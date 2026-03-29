@@ -3,30 +3,20 @@ from .interviewQuestion import InterviewQuestion, Difficulty
 QUESTION_BANK = [
     InterviewQuestion(
         id=1,
-        question="What are the 4 main principles of OOP?",
-        answer="""
-Encapsulation involves bundling data (properties) and methods into a single unit called a class. Encapsulation helps hide the internal implementation details of an object and provides a well-defined interface for interacting with the object.
-Abstraction focuses on the essential features of an object, hiding the unnecessary details. It allows you to create abstract classes and interfaces that define a contract without specifying the implementation details.
-Inheritance allows a derived class to inherit properties and methods from a base class. It promotes code reuse and helps create hierarchical relationships between classes.
-Polymorphism enables objects of different classes to be treated as objects of a common superclass. It allows you to write more generic and flexible code that can work with objects of different types.""",
-        difficulty=Difficulty.EASY,
-    ),
-    InterviewQuestion(
-        id=2,
         question="What is recursion?",
         answer="""
 Recursion is a programming technique where a function calls itself to solve a problem. It involves breaking down a problem into smaller, similar subproblems until a base case is reached. Recursive functions are often used to solve problems that can be defined in terms of smaller instances of the same problem, such as traversing tree-like data structures, calculating factorials, or generating Fibonacci sequences.""",
         difficulty=Difficulty.EASY,
     ),
     InterviewQuestion(
-        id=3,
+        id=2,
         question="What is parallel programming (multithreading), and its purpose? Which classes are used?",
         answer="""
 Parallel programming, or multithreading, is the ability of a system to support multiple threads of execution simultaneously. It improves performance by utilizing multiple processors or cores, allowing the application to perform multiple tasks concurrently. In .NET, classes like Task, Thread, and the Task Parallel Library (TPL) are commonly used for parallel programming.""",
         difficulty=Difficulty.EASY,
     ),
     InterviewQuestion(
-        id=4,
+        id=3,
         question="What is the fundamental difference between unit tests and integration tests?",
         answer="""
 The fundamental difference between unit tests and integration tests is the scope and focus of the tests:
@@ -39,7 +29,7 @@ The main difference is that unit tests target individual code units, while integ
         difficulty=Difficulty.EASY,
     ),
     InterviewQuestion(
-        id=5,
+        id=4,
         question="What is Garbage Collector at a basic level?",
         answer="""
 Garbage Collector is a mechanism in .NET that automatically reclaims memory occupied by objects no longer used by the application. This mechanism scans the memory (managed heap) to find unused objects and reclaim their space for future use.""",
@@ -47,7 +37,7 @@ Garbage Collector is a mechanism in .NET that automatically reclaims memory occu
         topic="oop",
     ),
     InterviewQuestion(
-        id=6,
+        id=5,
         question="Is there a difference between Delegate and Action?",
         answer="""
 Delegate is a general-purpose type representing any method with a matching signature.
@@ -56,7 +46,7 @@ Action is a specific type of delegate that represents a method with a void retur
         difficulty=Difficulty.MEDIUM,
     ),
     InterviewQuestion(
-        id=7,
+        id=6,
         question="What is boxing/unboxing?",
         answer="""
 Boxing is the process of converting a value type to a reference type instance.
