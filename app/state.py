@@ -7,7 +7,6 @@ from services.InterviewQuestionGenerator.InterviewQuestionGenerator import (
 from services.InterviewQuestionGenerator.interviewQuestion import Difficulty
 from services.InterviewQuestionGenerator.questionBank import QUESTION_BANK
 
-
 def init_session_state() -> None:
     if "difficulty" not in st.session_state:
         st.session_state["difficulty"] = Difficulty.EASY
@@ -23,6 +22,9 @@ def init_session_state() -> None:
 
     if "interview_active" not in st.session_state:
         st.session_state["interview_active"] = False
+
+    if "interview_complete" not in st.session_state:
+        st.session_state["interview_complete"] = False
 
     if "interview_evaluator_config" not in st.session_state:
         st.session_state["interview_evaluator_config"] = InterviewEvaluatorConfig()

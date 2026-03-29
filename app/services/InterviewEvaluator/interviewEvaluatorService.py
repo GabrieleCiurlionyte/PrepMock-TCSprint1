@@ -27,12 +27,10 @@ class InterviewEvaluatorService:
         self,
         interview_question: str,
         interviewee_answer: str,
-        include_few_shot: bool = False,
     ) -> list[dict[str, Any]]:
-        
         inputList = []
-        
-        self._addFewShotExamples(inputList, include_few_shot)
+
+        self._add_few_shot_examples(inputList)
         inputList.append(self._build_message(
                 role="user",
                 content=(
@@ -48,14 +46,12 @@ class InterviewEvaluatorService:
                 ),
             ))
         return inputList
-        
-    def _addFewShotExamples(self, inputList : list, include_few_shot: bool) -> list:
-        if(include_few_shot):
-            for example in FEW_SHOT_EXAMPLES:
-                inputList.append(
-                    self._build_message(role=example["role"], content=example["content"])
-                )
-        return inputList
+
+    def _add_few_shot_examples(self, input_list: list[dict[str, Any]]) -> None:
+        for example in FEW_SHOT_EXAMPLES:
+            input_list.append(
+                self._build_message(role=example["role"], content=example["content"])
+            )
 
     def evaluate(
         self,

@@ -2,7 +2,10 @@ import streamlit as st
 
 from components.actions.interview_state import (
     advance_to_next_question,
+    is_interview_active,
+    can_submit_answer,
     end_interview,
+    repeat_same_question,
     start_interview,
 )
 from components.DifficultySelector import render_difficulty_selector
@@ -11,6 +14,7 @@ from components.SideBar import render_openai_configuration_sidebar
 from services.InterviewEvaluator.main import EvaluateIntervieweeResponse
 from services.InterviewEvaluator.promptGuardModule import validate_interview_answer
 from state import init_session_state
+from utils.evaluation_formatter import format_evaluation_response
 
 # Page configuration
 st.set_page_config(
@@ -29,46 +33,37 @@ render_header(
     description="Configure OpenAI key. Select your level, answer technical interview questions, and receive structured feedback.",
 )
 
-def format_evaluation_response(evaluation) -> str:
-    lines = [
-        f"Score: {evaluation.overall_score}"
-        if evaluation.overall_score is not None
-        else "Score: N/A"
-    ]
-
-    if evaluation.message:
-        lines.append(f"Message: {evaluation.message}")
-
-    if evaluation.correct_answer:
-        lines.append("Correct points:")
-        lines.extend(f"- {item}" for item in evaluation.correct_answer)
-
-    if evaluation.incorrect_answer:
-        lines.append("Needs improvement:")
-        lines.extend(f"- {item}" for item in evaluation.incorrect_answer)
-
-    if evaluation.explanation:
-        lines.append(f"Explanation: {evaluation.explanation}")
-
-    return "\n".join(lines)
-
-
 render_difficulty_selector()
 st.markdown(f"Current difficulty: **{st.session_state['difficulty'].name.title()}**")
 
 col1, col2 = st.columns(2)
 with col1:
-    st.button("Start Interview", key="start_interview", on_click=start_interview, use_container_width=True)
+    st.button("Start Interview", 
+              key="start_interview", 
+              on_click=start_interview, 
+              use_container_width=True,
+              disabled=not is_interview_active())
 with col2:
-    st.button("End Interview", key="end_interview", on_click=end_interview, use_container_width=True)
+    st.button("End Interview",
+              key="end_interview",
+              on_click=end_interview, 
+              use_container_width=True,
+              disabled=is_interview_active())
 
 for message in st.session_state["messages"]:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
+if st.session_state["interview_complete"]:
+    st.info("No more questions are available for this difficulty. Start a new interview to continue.")
+
 if interviewee_answer := st.chat_input(
-    "What is your answer to the interview question?",
-    disabled=not st.session_state["interview_active"],
+    (
+        "No more questions are available for this difficulty."
+        if st.session_state["interview_complete"]
+        else "What is your answer to the interview question?"
+    ),
+    disabled=not can_submit_answer(),
 ):
     guard_result = validate_interview_answer(interviewee_answer)
     sanitized_answer = guard_result.sanitized_answer
@@ -109,4 +104,10 @@ if interviewee_answer := st.chat_input(
         st.markdown(response)
 
     st.session_state["messages"].append({"role": "assistant", "content": response})
-    advance_to_next_question()
+    
+    if evaluation.off_topic:
+        repeat_same_question()
+    else:
+        advance_to_next_question()
+
+    st.rerun()
